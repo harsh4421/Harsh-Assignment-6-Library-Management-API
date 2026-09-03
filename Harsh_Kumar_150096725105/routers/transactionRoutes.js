@@ -1,0 +1,1 @@
+const express=require('express');const router=express.Router();const auth=require('../middleware/auth');const role=require('../middleware/role');const c=require('../controller/bookController');router.get('/',auth,role('librarian'),c.allTransactions);router.get('/my',auth,c.myTransactions);module.exports=router;

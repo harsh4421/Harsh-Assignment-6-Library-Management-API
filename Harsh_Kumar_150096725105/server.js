@@ -1,0 +1,15 @@
+require('dotenv').config();
+const express=require('express');const cors=require('cors');const helmet=require('helmet');const swaggerUi=require('swagger-ui-express');
+const swaggerSpec=require('./Config/swagger');
+const {apiLimiter}=require('./middleware/rateLimiter');const logger=require('./middleware/logger');const {notFound,errorHandler}=require('./middleware/errorHandler');
+require('./Config/firebase');
+const app=express();const PORT=process.env.PORT||5001;
+app.use(helmet({contentSecurityPolicy:false}));app.use(cors());app.use(express.json());app.use(logger);app.use('/api',apiLimiter);
+app.get('/',(req,res)=>res.json({message:'Harsh Library Management API is running',docs:'/api-docs',health:'/health'}));
+app.get('/health',(req,res)=>res.json({status:'ok',service:'library-management-api',uptime:process.uptime()}));
+app.use('/api-docs',swaggerUi.serve,swaggerUi.setup(swaggerSpec));
+app.use('/app',express.static(require('path').join(__dirname,'src')));
+app.use('/api/auth',require('./routers/authRoutes'));app.use('/api/books',require('./routers/bookRoutes'));app.use('/api/transactions',require('./routers/transactionRoutes'));app.use('/api/users',require('./routers/userRoutes'));
+app.use(notFound);app.use(errorHandler);
+app.listen(PORT,()=>console.log(`Library Management API running on port ${PORT}`));
+module.exports=app;
