@@ -1,5 +1,0 @@
-Assignment 6 :- Library Management API
-
-Reference :- https://itm-library-management-api.netlify.app/
-Student :- Harsh Kumar
-Roll No. :- 150096725105
